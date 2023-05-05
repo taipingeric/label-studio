@@ -1,5 +1,3 @@
-<img src="https://user-images.githubusercontent.com/12534576/192582340-4c9e4401-1fe6-4dbb-95bb-fdbba5493f61.png"/>
-
 anaconda 安裝 
 
 ```bash
@@ -13,6 +11,60 @@ label-studio start
 ```
 
 [Timeseries template](https://labelstud.io/templates/gallery_timeseries.html)
+
+
+#### Timeseries classification and segmentation
+
+https://labelstud.io/templates/time_series_classification.html
+
+config
+```html
+<View>
+    <Header value="Time Series classification"
+            style="font-weight: normal"/>
+    <Choices name="pattern" toName="ts">
+        <Choice value="Accelerating"/>
+        <Choice value="Slowing"/>
+    </Choices>
+    <TimeSeriesLabels name="label" toName="ts">
+        <Label value="Run"/>
+        <Label value="Walk"/>
+    </TimeSeriesLabels>
+    <TimeSeries name="ts" value="$csv" valueType="url">
+        <Channel column="first_column"/>
+    </TimeSeries>
+</View>
+```
+
+Classification
+```xml
+<Choices name="pattern" toName="ts">
+    <Choice value="Accelerating"/>
+    <Choice value="Slowing"/>
+</Choices>
+```
+
+Segmentation
+```xml
+<TimeSeriesLabels name="label" toName="ts">
+    <Label value="Run"/>
+    <Label value="Walk"/>
+</TimeSeriesLabels>
+```
+
+Data location
+```xml
+<TimeSeries name="ts" value="$csv" valueType="url">
+    <Channel column="first_column"/>
+</TimeSeries>
+```
+
+
+
+
+
+
+
 
 ![GitHub](https://img.shields.io/github/license/heartexlabs/label-studio?logo=heartex) ![label-studio:build](https://github.com/heartexlabs/label-studio/workflows/label-studio:build/badge.svg) ![GitHub release](https://img.shields.io/github/v/release/heartexlabs/label-studio?include_prereleases)
 
