@@ -21,7 +21,8 @@ label-studio start
 https://labelstud.io/templates/time_series_classification.html
 
 config
-```html<View>
+```html
+<View>
   <Text name="txt" value="Sampling rate" />
   <Number name="number" toName="txt" min="10" defaultValue="500"/>
   <TimeSeriesLabels name="label" toName="ts">
