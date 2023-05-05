@@ -10,23 +10,31 @@ pip install -U label-studio
 label-studio start
 ```
 
+[Tags](https://labelstud.io/tags/index.html)
+
 [Timeseries template](https://labelstud.io/templates/gallery_timeseries.html)
 
+[Playground](https://labelstud.io/playground?config=%3CView%20style=%22display:%20flex;%22%3E%0A%20%20%3CView%20style=%22flex:%2050%25%22%3E%0A%20%20%20%20%3CHeader%20value=%22Facts:%22%20/%3E%0A%20%20%20%20%3CText%20name=%22text%22%20value=%22$fact%22%20/%3E%0A%20%20%3C/View%3E%0A%20%20%3CView%20style=%22flex:%2050%25;%20margin-left:%201em%22%3E%0A%20%20%20%20%3CHeader%20value=%22Enter%20your%20question:%22%20/%3E%0A%20%20%20%20%3CTextArea%20name=%22question%22%20/%3E%0A%20%20%3C/View%3E%0A%3C/View%3E)
 
 #### Timeseries classification and segmentation
 
 https://labelstud.io/templates/time_series_classification.html
 
 config
-```html
-<View>
+```html<View>
+  <Text name="txt" value="Sampling rate" />
+  <Number name="number" toName="txt" min="10" defaultValue="500"/>
   <TimeSeriesLabels name="label" toName="ts">
-    <Label value="Run"/>
-    <Label value="Walk"/>
-  </TimeSeriesLabels> 
+    <Label value="Class0"/>
+    <Label value="Class1"/>
+  </TimeSeriesLabels>
+  <Choices name="pattern" toName="ts">
+    <Choice value="Normal"/>
+    <Choice value="AF"/>
+  </Choices>
   <TimeSeries name="ts" valueType="url" value="$csv_url" timeColumn="time">
-    <Channel column="sensorone" />
-    <Channel column="sensortwo" />
+    <Channel column="I" />
+    <Channel column="II" />
   </TimeSeries>
 </View>
 ```
@@ -53,6 +61,10 @@ Data location
     <Channel column="first_column"/>
 </TimeSeries>
 ```
+#### Issues
+
+1. dynamic height for channel
+2. different segmentation labels for diiferent channels
 
 
 
