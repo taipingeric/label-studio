@@ -20,19 +20,14 @@ https://labelstud.io/templates/time_series_classification.html
 config
 ```html
 <View>
-    <Header value="Time Series classification"
-            style="font-weight: normal"/>
-    <Choices name="pattern" toName="ts">
-        <Choice value="Accelerating"/>
-        <Choice value="Slowing"/>
-    </Choices>
-    <TimeSeriesLabels name="label" toName="ts">
-        <Label value="Run"/>
-        <Label value="Walk"/>
-    </TimeSeriesLabels>
-    <TimeSeries name="ts" value="$csv" valueType="url">
-        <Channel column="first_column"/>
-    </TimeSeries>
+  <TimeSeriesLabels name="label" toName="ts">
+    <Label value="Run"/>
+    <Label value="Walk"/>
+  </TimeSeriesLabels> 
+  <TimeSeries name="ts" valueType="url" value="$csv_url" timeColumn="time">
+    <Channel column="sensorone" />
+    <Channel column="sensortwo" />
+  </TimeSeries>
 </View>
 ```
 
