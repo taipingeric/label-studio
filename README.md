@@ -20,6 +20,78 @@ label-studio start
 
 https://labelstud.io/templates/time_series_classification.html
 
+Segmentation config
+```html
+<View>
+  <Text name="txt" value="Sampling rate" />
+  <Number name="number" toName="txt" min="10" defaultValue="500"/>
+  <TimeSeriesLabels name="label" toName="ts">
+    <Label value="p"/>
+    <Label value="N"/>
+    <Label value="t"/>
+  </TimeSeriesLabels>
+  <TimeSeries name="ts" valueType="url" value="$csv" timeColumn="time">
+    <Channel column="i" />
+    <Channel column="ii" />
+    <Channel column="iii" />
+    <Channel column="avr" />
+    <Channel column="avl" />
+    <Channel column="avf" />
+    <Channel column="v1" />
+    <Channel column="v2" />
+    <Channel column="v3" />
+    <Channel column="v4" />
+    <Channel column="v5" />
+    <Channel column="v6" />
+  </TimeSeries>
+</View>
+```
+output format
+```json
+[
+  {
+    "csv": "\/data\/upload\/1\/b86f3da9-1.csv",
+    "id": 2,
+    "label": [
+      {
+        "start": 4,
+        "end": 413,
+        "instant": false,
+        "timeserieslabels": [
+          "p"
+        ]
+      },
+      {
+        "start": 397,
+        "end": 611,
+        "instant": false,
+        "timeserieslabels": [
+          "t"
+        ]
+      },
+      {
+        "start": 610,
+        "end": 754,
+        "instant": false,
+        "timeserieslabels": [
+          "t"
+        ]
+      }
+    ],
+    "number": [
+      {
+        "number": 500
+      }
+    ],
+    "annotator": 1,
+    "annotation_id": 1,
+    "created_at": "2023-05-26T09:11:10.011871Z",
+    "updated_at": "2023-05-26T09:12:49.721472Z",
+    "lead_time": 53.141
+  }
+]
+```
+
 config
 ```html
 <View>
