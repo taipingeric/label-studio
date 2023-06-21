@@ -1,6 +1,6 @@
 {
-  "message": "fix: LSDV-5162: Fix shifting of annotation tabs on hover",
-  "commit": "3c1f6d58941ffb03a6e5b6fd7af4d3a9673e428e",
+  "message": "fix: LSDV-5250: Hotkey for creating relations not working",
+  "commit": "04c7c24a32cd977991c5fbf8e4f84df7916d1375",
   "branch": "master",
-  "date": "2023/05/25 21:06:41"
+  "date": "2023/06/20 09:20:21"
 }
