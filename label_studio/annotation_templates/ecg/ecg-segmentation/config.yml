@@ -1,0 +1,29 @@
+title: ECG Segmentation
+type: AIA
+group: ECG
+image: /static/templates/image-captioning.png
+details: <h1>label ECG segmentation task</h1>
+config:
+  <View>
+    <Text name="txt" value="Sampling rate"/>
+    <Number name="number" toName="txt" min="10" defaultValue="500"/> 
+    <TimeSeriesLabels name="label" toName="ts">
+      <Label value="p" background="green"/>
+      <Label value="N" background="blue"/>
+      <Label value="t" background="red"/>
+    </TimeSeriesLabels>
+    <TimeSeries name="ts" valueType="url" value="$csv" timeColumn="time">
+      <Channel column="i" legend="i" dataRange="-1,1" height="80" displayFormat=".1f"/> 
+      <Channel column="ii" legend="ii" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="iii" legend="iii" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="avr" legend="avr" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="avl" legend="avl" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="avf" legend="avf" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v1" legend="v1" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v2" legend="v2" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v3" legend="v3" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v4" legend="v4" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v5" legend="v5" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v6" legend="v6" dataRange="-1,1" height="80" displayFormat=".1f"/>
+    </TimeSeries>
+  </View>
