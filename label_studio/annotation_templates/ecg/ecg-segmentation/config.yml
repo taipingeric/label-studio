@@ -1,5 +1,5 @@
 title: ECG Segmentation
-type: AIA
+type: community
 group: ECG
 image: /static/templates/image-captioning.png
 details: <h1>label ECG segmentation task</h1>
