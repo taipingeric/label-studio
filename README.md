@@ -1,7 +1,7 @@
-anaconda 安裝 
+#### 安裝 label-studio
 
+### Anaconda 安裝官方 label-studio
 ```bash
-
 conda create -n label-studio python=3.9
 conda activate label-studio
 conda install -c anaconda libpq
@@ -9,6 +9,27 @@ pip install -U label-studio
 
 label-studio start
 ```
+
+### Anaconda 安裝客製化 label-studio
+下載
+```bash
+git clone https://github.com/taipingeric/label-studio.git
+cd label-studio
+```
+``` bash
+conda create -n label-studio python=3.9
+conda activate label-studio
+conda install -c anaconda libpq
+
+# pip 安裝
+pip install -e .
+# 下載靜態檔案
+python label_studio/manage.py collectstatic
+# 開啟 server in development mode at http://localhost:8080
+python label_studio/manage.py runserver
+```
+
+```bash
 
 [Tags](https://labelstud.io/tags/index.html)
 
