@@ -134,6 +134,25 @@ Data location
     <Channel column="first_column"/>
 </TimeSeries>
 ```
+#### Add default template
+
+1. update 'label_studio/annotation_templates/groups.txt'
+2. add `config.yaml` to `label_studio/annotation_templates/[your group]/[your template]/`
+```yaml
+title: Template title
+type: community # use community!
+group: Group name # in groups.txt
+image: /static/templates/image-captioning.png
+details: <h1>details discription </h1>
+config:
+  <View>
+    <Image name="image" value="$captioning"/>
+    <Header value="Describe the image:"/>
+    <TextArea name="caption" toName="image" placeholder="Enter description here..."
+              rows="5" maxSubmissions="1"/>
+  </View>
+```
+
 #### Issues
 
 1. dynamic height for channel
