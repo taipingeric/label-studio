@@ -1,0 +1,42 @@
+[
+  {
+    "csv": "\/data\/upload\/12\/29be6360-12lead.csv",
+    "id": 12,
+    "label": [
+      {
+        "start": 0.004,
+        "end": 0.764,
+        "instant": false,
+        "timeserieslabels": [
+          "N"
+        ]
+      },
+      {
+        "start": 0.762,
+        "end": 1.468,
+        "instant": false,
+        "timeserieslabels": [
+          "p"
+        ]
+      },
+      {
+        "start": 1.466,
+        "end": 2.5,
+        "instant": false,
+        "timeserieslabels": [
+          "t"
+        ]
+      }
+    ],
+    "number": [
+      {
+        "number": 500
+      }
+    ],
+    "annotator": 1,
+    "annotation_id": 12,
+    "created_at": "2023-06-30T09:48:39.596831Z",
+    "updated_at": "2023-06-30T09:48:39.596848Z",
+    "lead_time": 44.062
+  }
+]
