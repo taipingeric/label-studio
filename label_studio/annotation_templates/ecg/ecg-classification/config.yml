@@ -1,0 +1,30 @@
+title: ECG Classification
+type: community
+group: ECG
+image: /static/templates/image-captioning.png
+details: <h1>label ECG classification task</h1>
+config:
+  <View>
+    <Text name="txt" value="Sampling rate"/>
+    <Number name="number" toName="txt" min="10" defaultValue="500"/> 
+    <Choices name="pattern" toName="ts">
+      <Choice value="Normal"/>
+      <Choice value="AF"/>
+      <Choice value="AV Block"/>
+      <Choice value="Noise"/>
+    </Choices>
+    <TimeSeries name="ts" valueType="url" value="$csv" timeColumn="time">
+      <Channel column="i" legend="i" dataRange="-1,1" height="80" displayFormat=".1f"/> 
+      <Channel column="ii" legend="ii" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="iii" legend="iii" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="avr" legend="avr" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="avl" legend="avl" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="avf" legend="avf" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v1" legend="v1" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v2" legend="v2" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v3" legend="v3" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v4" legend="v4" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v5" legend="v5" dataRange="-1,1" height="80" displayFormat=".1f"/>
+      <Channel column="v6" legend="v6" dataRange="-1,1" height="80" displayFormat=".1f"/>
+    </TimeSeries>
+  </View>
