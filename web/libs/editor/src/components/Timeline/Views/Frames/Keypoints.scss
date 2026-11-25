@@ -82,7 +82,16 @@
   &_timeline &__point {
     width: 3px;
     height: 20px;
+    overflow: visible;
     transform: translate3d(-100%, -50%, 0);
+
+    // the edge stays 3px wide but gets a 17px invisible grab area, so it's still easy to hit when zoomed out
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -4px -7px;
+      cursor: ew-resize;
+    }
   }
 
   &_timeline &__point_last {

@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { IconZoomIn } from "@humansignal/icons";
+import { IconZoomIn, IconZoomOut } from "@humansignal/icons";
 import { Button } from "@humansignal/ui";
 import { Dropdown } from "@humansignal/ui";
 import { Menu } from "../../../common/Menu/Menu";
@@ -24,7 +24,13 @@ import ResizeObserver from "../../../utils/resize-observer";
 import { clamp, isDefined } from "../../../utils/utilities";
 import "./Video.scss";
 import { VideoRegions } from "./VideoRegions";
+import { SingleTrackBar } from "./SingleTrackBar";
 import { ff } from "@humansignal/core";
+
+// width of one frame on the timeline at zoom 1:1, and the allowed timeline zoom range
+const TIMELINE_STEP_SIZE = 16;
+const TIMELINE_ZOOM_MIN = 0.0002;
+const TIMELINE_ZOOM_MAX = 8;
 
 const isSyncedBuffering = ff.isActive(ff.FF_SYNCED_BUFFERING);
 
@@ -330,6 +336,23 @@ const HtxVideoView = ({ item, store }) => {
     [panMode, pan],
   );
 
+  // horizontal zoom of the frames timeline (multiplies the default 16px per frame)
+  const [timelineZoom, _setTimelineZoom] = useState(1);
+  const setTimelineZoom = useCallback((value) => {
+    _setTimelineZoom((zoom) => clamp(value instanceof Function ? value(zoom) : value, TIMELINE_ZOOM_MIN, TIMELINE_ZOOM_MAX));
+  }, []);
+  const timelineZoomToFit = useCallback(() => {
+    const timelineEl = mainContentRef.current?.querySelector(
+      `.${cn("video-segmentation").elem("timeline").toClassName()}`,
+    );
+
+    if (!timelineEl || !videoLength) return;
+    // the frames view has a 150px label column on the left and a vertical scrollbar on the right
+    const available = Math.max(50, timelineEl.clientWidth - 150 - 20);
+
+    setTimelineZoom(available / (TIMELINE_STEP_SIZE * videoLength));
+  }, [videoLength, setTimelineZoom]);
+
   const zoomIn = useCallback(() => {
     setZoom((zoom) => zoom + ZOOM_STEP);
   }, []);
@@ -621,6 +644,15 @@ const HtxVideoView = ({ item, store }) => {
           </div>
         </div>
 
+        {loaded && item.singleTrack && (
+          <SingleTrackBar
+            item={item}
+            length={videoLength}
+            position={position}
+            onSeek={handleTimelinePositionChange}
+          />
+        )}
+
         {loaded && (
           <Timeline
             className={cn("video-segmentation").elem("timeline").toClassName()}
@@ -633,7 +665,8 @@ const HtxVideoView = ({ item, store }) => {
             altHopSize={store.settings.videoHopSize}
             allowFullscreen={false}
             fullscreen={isFullScreen}
-            defaultStepSize={16}
+            defaultStepSize={TIMELINE_STEP_SIZE}
+            zoom={timelineZoom}
             disableView={!supportsTimelineRegions && !supportsRegions}
             framerate={item.framerate}
             controls={{ FramesControl: true }}
@@ -665,6 +698,19 @@ const HtxVideoView = ({ item, store }) => {
                   );
                 },
               },
+              {
+                position: "right",
+                component: () => (
+                  <TimelineZoomControls
+                    key="timeline-zoom"
+                    zoom={timelineZoom}
+                    onZoomOut={() => setTimelineZoom((z) => z / 2)}
+                    onZoomIn={() => setTimelineZoom((z) => z * 2)}
+                    onFit={timelineZoomToFit}
+                    onReset={() => setTimelineZoom(1)}
+                  />
+                ),
+              },
             ]}
             onPositionChange={handleTimelinePositionChange}
             onPlay={handlePlayClick}
@@ -678,6 +724,30 @@ const HtxVideoView = ({ item, store }) => {
         )}
       </div>
     </ObjectTag>
+  );
+};
+
+const TimelineZoomControls = ({ zoom, onZoomOut, onZoomIn, onFit, onReset }) => {
+  const pxPerFrame = TIMELINE_STEP_SIZE * zoom;
+  const label =
+    pxPerFrame >= 1 ? `${pxPerFrame.toFixed(pxPerFrame >= 10 ? 0 : 1)} px/frame` : `${Math.round(1 / pxPerFrame)} frames/px`;
+
+  return (
+    <div className={cn("timeline-zoom").toClassName()}>
+      <Button size="small" variant="neutral" look="string" title="Timeline zoom out (show more frames)" onClick={onZoomOut}>
+        <IconZoomOut />
+      </Button>
+      <Button size="small" variant="neutral" look="string" title="Timeline zoom in (show fewer frames)" onClick={onZoomIn}>
+        <IconZoomIn />
+      </Button>
+      <Button size="small" variant="neutral" look="string" title="Fit the whole video in the timeline" onClick={onFit}>
+        Fit
+      </Button>
+      <Button size="small" variant="neutral" look="string" title="Default timeline zoom (16 px per frame)" onClick={onReset}>
+        1:1
+      </Button>
+      <span className={cn("timeline-zoom").elem("label").toClassName()}>{label}</span>
+    </div>
   );
 };
 

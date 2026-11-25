@@ -14,7 +14,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpRe
 from django.utils._os import safe_join
 from drf_spectacular.utils import extend_schema
 from io_storages.localfiles.models import LocalFilesImportStorage
-from ranged_fileresponse import RangedFileResponse
+from core.utils.ranged_response import RangedFileResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 

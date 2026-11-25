@@ -50,3 +50,16 @@
     justify-content: flex-end;
   }
 }
+.timeline-zoom {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  &__label {
+    min-width: 84px;
+    margin-left: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    color: var(--color-neutral-content-subtler);
+  }
+}

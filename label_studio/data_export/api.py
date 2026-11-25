@@ -21,7 +21,7 @@ from django.utils.decorators import method_decorator
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from projects.models import Project
-from ranged_fileresponse import RangedFileResponse
+from core.utils.ranged_response import RangedFileResponse
 from rest_framework import generics, status
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.response import Response

@@ -1,5 +1,5 @@
 import { clamp } from "@humansignal/core/lib/utils/lodash-replacements";
-import { type FC, type ReactElement, useCallback, useRef } from "react";
+import { type FC, type MouseEvent as ReactMouseEvent, type ReactElement, useCallback, useRef, useState } from "react";
 import { cn } from "../../utils/bem";
 import type { TimelineMinimapProps } from "./Types";
 
@@ -12,6 +12,8 @@ export interface SeekerProps {
   seekVisible: number;
   step: number;
   leftOffset?: number;
+  /** frames per second; when set, hovering the seeker shows the frame number and time under the cursor */
+  framerate?: number;
   minimap?: ReactElement<TimelineMinimapProps> | null;
   onIndicatorMove: (position: number) => void;
   onSeek: (position: number) => void;
@@ -26,8 +28,10 @@ export const Seeker: FC<SeekerProps> = ({
   onSeek,
   minimap,
   step,
+  framerate,
   ...props
 }) => {
+  const [hover, setHover] = useState<{ x: number; text: string } | null>(null);
   const leftOffset = (props.leftOffset ?? 150) / step;
   const rootRef = useRef<HTMLDivElement>();
   const seekerRef = useRef<HTMLDivElement>();
@@ -111,6 +115,20 @@ export const Seeker: FC<SeekerProps> = ({
     [length],
   );
 
+  const onHover = useCallback(
+    (e: ReactMouseEvent) => {
+      if (!framerate || !rootRef.current) return;
+      const rect = rootRef.current.getBoundingClientRect();
+      const frame = clamp(Math.round(((e.clientX - rect.left) / rect.width) * length), 1, length);
+      const seconds = Math.max(0, (frame - 1) / framerate);
+      const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+      const ss = String(Math.floor(seconds % 60)).padStart(2, "0");
+
+      setHover({ x: e.clientX - rect.left, text: `frame ${frame}  ${mm}:${ss}` });
+    },
+    [framerate, length],
+  );
+
   const onDrag = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
@@ -126,7 +144,13 @@ export const Seeker: FC<SeekerProps> = ({
   );
 
   return (
-    <div className={cn("seeker").toClassName()} ref={rootRef as any} onMouseDown={onDrag}>
+    <div
+      className={cn("seeker").toClassName()}
+      ref={rootRef as any}
+      onMouseDown={onDrag}
+      onMouseMove={onHover}
+      onMouseLeave={() => setHover(null)}
+    >
       <div className={cn("seeker").elem("track").toClassName()} />
       {showIndicator && (
         <div
@@ -141,6 +165,11 @@ export const Seeker: FC<SeekerProps> = ({
         style={{ left: `${seekerOffset}%` }}
       />
       <div className={cn("seeker").elem("minimap").toClassName()}>{minimap}</div>
+      {hover && (
+        <div className={cn("seeker").elem("hover").toClassName()} style={{ left: hover.x }}>
+          {hover.text}
+        </div>
+      )}
     </div>
   );
 };

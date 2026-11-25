@@ -5,6 +5,7 @@ import { AreaMixin } from "../mixins/AreaMixin";
 import NormalizationMixin from "../mixins/Normalization";
 import RegionsMixin from "../mixins/Regions";
 import { VideoModel } from "../tags/object/Video/Video";
+import { resolveTimelineOverlaps } from "../tags/object/Video/singleTrack";
 import { isDefined } from "../utils/utilities";
 import { EditableRegion } from "./EditableRegion";
 
@@ -110,8 +111,9 @@ const Model = types
      * @param {Object} [options]
      * @param {"new" | "edit" | undefined} [options.mode] Do we dynamically change the region ("new" one or "edit" existing one) or just edit it precisely (undefined)?
      *        In first two cases we need to update undo history only once
+     * @param {boolean} [options.skipSingleTrack] Internal: don't run single-track overlap resolution for this change
      */
-    setRange([start, end], { mode } = {}) {
+    setRange([start, end], { mode, skipSingleTrack } = {}) {
       if (self.locked) return;
       if (mode === "new") {
         // we need to update existing history item while drawing a new region
@@ -122,6 +124,11 @@ const Model = types
         self.parent.annotation.history.setSkipNextUndoState();
       }
       self.ranges = [{ start, end }];
+      // precise edits (e.g. from the region details panel) are resolved right away;
+      // dynamic drawing/editing is resolved once in Video#finishDrawing()
+      if (!mode && !skipSingleTrack && self.object?.singleTrack) {
+        resolveTimelineOverlaps(self.object, self);
+      }
     },
   }));
 

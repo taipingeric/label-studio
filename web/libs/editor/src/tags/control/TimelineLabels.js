@@ -34,9 +34,13 @@ import { HtxLabels, LabelsModel } from "./Labels/Labels";
  * @meta_description Classify video frames using TimelineLabels.
  * @param {string} name Name of the element
  * @param {string} toName Name of the video element
+ * @param {boolean} [singleTrack=false] Allow only one label per frame: drawing or editing a span trims, splits or removes
+ *        the overlapping spans of other labels and merges touching spans of the same label. Also shows a whole-video
+ *        summary bar with coverage, gap and overlap counts above the timeline.
  */
 const TagAttrs = types.model({
   toname: types.maybeNull(types.string),
+  singletrack: types.optional(types.boolean, false),
 });
 
 const ModelAttrs = types.model("TimelineLabelsModel", {

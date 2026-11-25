@@ -16,7 +16,7 @@ from django.utils._os import safe_join
 from django.utils.http import http_date
 from django.utils.translation import gettext as _
 from django.views.static import was_modified_since
-from ranged_fileresponse import RangedFileResponse
+from core.utils.ranged_response import RangedFileResponse
 
 
 def serve(request, path, document_root=None, show_indexes=False, manifest_asset_prefix=None):

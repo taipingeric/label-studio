@@ -168,6 +168,7 @@ const TimelineComponent: FC<TimelineProps> = ({
           length={length}
           step={step}
           leftOffset={View.settings?.leftOffset}
+          framerate={mode === "frames" ? framerate : undefined}
           position={currentPosition}
           seekOffset={seekOffset}
           seekVisible={seekVisibleWidth}

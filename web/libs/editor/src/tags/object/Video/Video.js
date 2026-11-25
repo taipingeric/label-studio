@@ -1,4 +1,4 @@
-import { getRoot, types } from "mobx-state-tree";
+import { getRoot, isAlive, types } from "mobx-state-tree";
 import React from "react";
 
 import { AnnotationMixin } from "../../../mixins/AnnotationMixin";
@@ -11,6 +11,7 @@ import { FF_VIDEO_FRAME_SEEK_PRECISION, isFF } from "../../../utils/feature-flag
 import { ff } from "@humansignal/core";
 import ObjectBase from "../Base";
 import { isDefined } from "../../../utils/utilities";
+import { resolveTimelineOverlaps } from "./singleTrack";
 
 const isSyncedBuffering = ff.isActive(ff.FF_SYNCED_BUFFERING);
 
@@ -109,6 +110,8 @@ const Model = types
     frame: 1,
     length: 1,
     drawingRegion: null,
+    // timeline region that is being drawn or edited right now (for single-track resolution)
+    lastDrawnRegion: null,
     loopTimelineRegion: false,
   }))
   .views((self) => ({
@@ -122,6 +125,11 @@ const Model = types
 
     get timelineControl() {
       return self.annotation.toNames.get(self.name)?.find((s) => s.type.includes("timeline"));
+    },
+
+    /** One label per frame, enabled with <TimelineLabels singleTrack="true"> */
+    get singleTrack() {
+      return !!self.timelineControl?.singletrack;
     },
 
     get videoControl() {
@@ -481,13 +489,17 @@ const Model = types
         if (id) {
           const region = self.annotation.regions.find((r) => r.cleanId === id);
           const range = region?.ranges?.[0];
-          return range && [range.start, range.end].includes(frame) ? region : null;
+          const editing = range && [range.start, range.end].includes(frame) ? region : null;
+
+          self.lastDrawnRegion = editing;
+          return editing;
         }
         const control = self.timelineControl;
         // labels should be selected or allow to create region without labels
         if (!control?.selectedLabels?.length && !control?.allowempty) return null;
 
         self.drawingRegion = self.addTimelineRegion({ frame, enabled: false });
+        self.lastDrawnRegion = self.drawingRegion;
 
         return self.drawingRegion;
       },
@@ -498,9 +510,22 @@ const Model = types
        * @param {string} options.mode "new" if we are creating a new region, "edit" if we are editing an existing one
        */
       finishDrawing({ mode }) {
+        const region = self.lastDrawnRegion;
+        const history = self.annotation.history;
+
         self.drawingRegion = null;
+        self.lastDrawnRegion = null;
+
+        // single-track: fix overlapping spans as part of the same undo step as the user's own change
+        const changed = self.singleTrack && region && isAlive(region) && resolveTimelineOverlaps(self, region);
+
         if (mode === "edit") {
-          self.annotation.history.recordNow();
+          history.recordNow();
+          // recordNow() already captured the fixed state; don't record it a second time when the action ends
+          if (changed) history.setSkipNextUndoState(true);
+        } else if (changed) {
+          // merge the fixes into the history item of the region that was just drawn
+          history.setReplaceNextUndoState(true);
         }
       },
     };
